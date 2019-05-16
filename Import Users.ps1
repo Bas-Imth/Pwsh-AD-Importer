@@ -1,6 +1,6 @@
 clear-host
 Import-Module ActiveDirectory
-fuction1{  $users = Import-Csv -Path ".\*.csv" -Delimiter ';'
+function Import{  $users = Import-Csv -Path ".\*.csv" -Delimiter ';'
 
   ForEach ($user in $users) {
     $fullname = $user.firstname + " " + $user.lastname #AD should understand spaces...?
@@ -30,27 +30,28 @@ do {
       if ( -not $ok) { wire-host "Not a valid option."} }until ( $ok )
 
       switch -Regex ( $choice ) {
-        "A"
-        {
-          Write-Host "Searching script directory"
-          Push-Location $folder
-          fuction1
-        }
-        "B"
-        {
-          Write-host -nonewline "Which directory should I look in?:"
-          $location = Read-Host -Prompt 'Input the directory to search in'
-          Set-Location $location
-          fuction1
-      }
-      "C"
+      "A"
       {
-        Write-Host "This should go wrong."
-        Get-Childitem ".\*.csv" –Path C:\ -Recurse –force -ErrorAction SilentlyContinue
-        function1
+        Write-Host "Searching script directory"
+        Push-Location $folder
+        Import
       }
+      "B"
+      {
+        Write-host -nonewline "Which directory should I look in?:"
+        $location = Read-Host -Prompt 'Input the directory to search in'
+        Set-Location $location
+        Import
+    }
+    "C"
+    {
+      Write-Host "This should go wrong."
+      Get-Childitem ".\*.csv" –Path C:\ -Recurse –force -ErrorAction SilentlyContinue
+      Import
+    }
+    "X"
+    {
+      Exit
     }
   }
-
-Echo "Importing users..." > logbook.txt
-pwd
+}  until ( $choice -match "X" )
