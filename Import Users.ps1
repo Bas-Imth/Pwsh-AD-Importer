@@ -9,7 +9,8 @@ function Import{  $users = Import-Csv -Path ".\*.csv" -Delimiter ';'
     $password = $user.password
     $setpassword = ConvertTo-SecureString $password -AsPlainText -Force
     $OU = $user.ou
-    New-ADUser -Name $fullname -DisplayName $username -GivenName $firstname -Surname $lastname -AccountPassword $setpassword -Enabled $true
+    New-ADUser -Name $fullname -DisplayName $username -GivenName $firstname -Surname $lastname -AccountPassword $setpassword -Enabled $true -Path $OU
+    Add-ADGroupMember -Identity $user.group1 -Members $username
   } }
 do {
     do {
@@ -27,7 +28,7 @@ do {
 
       $ok = $choice -match '^[abcx]+$'
 
-      if ( -not $ok) { wire-host "Not a valid option."} }until ( $ok )
+      if ( -not $ok) { write-host "Not a valid option."} }until ( $ok )
 
       switch -Regex ( $choice ) {
       "A"
