@@ -1,6 +1,6 @@
 # PwshSchoolProject
 
-Has yet to be properly tested and edited. 
+Has yet to be properly tested and edited.  
 Pwsh script made by me to import users from a .csv file straight into ActiveDirectory.  
 It is recommended to have the .csv and the script in the same dir.  
 Although this is not necessary.  
