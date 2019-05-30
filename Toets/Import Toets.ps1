@@ -1,20 +1,21 @@
 clear-host
 Import-Module ActiveDirectory
-function Import{  $users = Import-Csv -Path ".\*.csv" -Delimiter ';'
+function Import{  $users = Import-Csv -Path "*.csv" -Delimiter ';'
 
   ForEach ($user in $users) {
-    $fullname = $user.firstname + " " + $user.lastname #AD Understands spaces.
-    Write-Host  $fullname
-    $username = $user.lastname + $user.firstname
-    Write-Host $username
+    $fullname = $user.firstname + " " + $user.lastname #AD should understand spaces...?
+    $username = $user.lastname + $user.fistname
     $firstname = $user.firstname
-    Write-Host $firstname
     $password = $user.password
-    #$setpassword = ConvertTo-SecureString $password -AsPlainText -Force # I'm confident this doesn't work.
-    $OU = $user.ou # This my not always work depending on you .Csv file.
-    Echo $OU  #Have to be sure it finds something.
-    New-ADUser -Name $fullname -DisplayName $username -GivenName $firstname -Surname $lastname -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) -Enabled $true -Path $OU
-    Add-ADGroupMember -Identity $user.group1 -Members $fullname #Pwsh can't find users based on their username. Idk why.
+    $setpassword = ConvertTo-SecureString $password -AsPlainText -Force
+    $OU = $user.ou
+    $homedirectory ='D:\Users' -f $username
+    New-ADUser -Name $fullname -DisplayName $username -GivenName $firstname -Surname $lastname -AccountPassword $setpassword -Enabled $true -Path $OU
+    Add-ADGroupMember -Identity $user.group -Members $username
+    Set-ADUser $username -homedirectory $homedirectory -homedrive d;
+    if( -not ( Test-Path $homedirectory) ){
+      New-Item -Path $homedirectory -ItemType directory
+    }
   } }
 do {
     do {
@@ -33,7 +34,6 @@ do {
       $ok = $choice -match '^[abcx]+$'
 
       if ( -not $ok) { write-host "Not a valid option."} }until ( $ok )
-      Clear-Host
 
       switch -Regex ( $choice ) {
       "A"
@@ -52,7 +52,7 @@ do {
     "C"
     {
       Write-Host "This should go wrong."
-      Get-Childitem ".\*.csv" –Path C:\ -Recurse –force -ErrorAction SilentlyContinue
+      Get-Childitem "*.csv" –Path C:\ -Recurse –force -ErrorAction SilentlyContinue
       Import
     }
     "X"
