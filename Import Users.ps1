@@ -1,6 +1,6 @@
 clear-host
 Import-Module ActiveDirectory
-function Import{  $users = Import-Csv -Path ".\*.csv" -Delimiter ';'
+function Import{  $users = Import-Csv -Path "*.csv" -Delimiter ';'
 
   ForEach ($user in $users) {
     $fullname = $user.firstname + " " + $user.lastname #AD Understands spaces.
