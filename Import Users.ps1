@@ -11,14 +11,14 @@ function Import{  $users = Import-Csv -Path "*.csv" -Delimiter ';'
     Write-Host $firstname
     $password = $user.password
     #$setpassword = ConvertTo-SecureString $password -AsPlainText -Force # I'm confident this doesn't work.
-    $OU = $user.ou # This my not always work depending on you .Csv file.
-    Echo $OU  #Have to be sure it finds something.
+    $OU = $user.ou # This my not always work depending on your .csv file.
+    Echo $OU  # Have to be sure it finds something.
     New-ADUser -Name $fullname -DisplayName $username -GivenName $firstname -Surname $lastname -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) -Enabled $true -Path $OU
     Add-ADGroupMember -Identity $user.group1 -Members $fullname #Pwsh can't find users based on their username. Idk why.
   } }
 do {
     do {
-      Echo "Script made by: Bas Imthorn."
+      Echo "Script made by: Bas Imth."
       Echo "This script will import users into AD from a .csv file"
       Echo "-----------------------------------------------------"
       Echo "A - Find file in current directory"
